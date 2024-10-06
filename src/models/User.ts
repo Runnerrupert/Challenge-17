@@ -11,11 +11,20 @@ const userSchema = new Schema<IUser>(
     {
         username: {
             type: String,
+            unique: true,
             required: true,
+            trim: true,
         },
         email: {
             type: String,
             required: true,
+            unique: true,
+            validate: {
+                validator: function(v) {
+                    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+                },
+                message: props => `${props.value} is not a valid email address!`
+            },
         },
         thoughts: [
             {
@@ -37,6 +46,12 @@ const userSchema = new Schema<IUser>(
         timestamps: true
     },
 );
+
+userSchema
+    .virtual('friendCount')
+    .get(function (this:IUser) {
+        return this.friends?.length;
+    })
 
 const User = model<IUser>('User', userSchema);
 
