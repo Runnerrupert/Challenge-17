@@ -91,3 +91,49 @@ export const deleteUser = async (req: Request, res: Response) => {
         return res.status(500).json(err);
     }
 }
+
+// Method to add a friend to a specific user based on that friends ID
+export const addFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $addToSet: 
+                { friends: req.params.friendId }
+            },
+            { runValidators: true, new: true }
+        );
+
+        if (!user) {
+            return res
+                .status(404)
+                .json({ message: 'No user was found with that ID' });
+        }
+
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+// Method to delete a friend from a specific user based on that friends ID
+export const deleteFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $pull: 
+                { friends: req.params.friendId }
+            },
+            { runValidators: true, new: true }
+        );
+
+        if (!user) {
+            return res
+                .status(404)
+                .json({ message: 'No user was found with that ID' });
+        }
+
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
