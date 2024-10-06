@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
-import { User, Thought } from '../models/index.js';
+// import { ObjectId } from 'mongodb'; // 
+import { User } from '../models/index.js'; // Import { Thought } when ready
 
 // Method to get all users from the Database
 export const getAllUsers = async (_req: Request, res: Response) => {
