@@ -1,43 +1,85 @@
-import { Schema, model, document, ObjectID } from 'mongoose';
+import { Schema, Types, model, type Document } from 'mongoose';
+
+interface IReaction extends Document {
+    reactionId: Schema.Types.ObjectId,
+    reactionBody: string,
+    username: string,
+    createdAt: Date,
+}
 
 interface IThought extends Document {
     thoughtText: string,
-    createdAt: Date,
+    createdAt: Date | string,
     username: string,
     reactions: Schema.Types.ObjectId[]
 }
 
-const thoughtSchema = new Schema<IThought>(
+const reactionSchema = new Schema<IReaction>(
     {
-        thoughtText: {
+        reactionId: {
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId(),
+        },
+        reactionBody: {
             type: String,
             required: true,
-            min_legnth: 1,
-            max_length: 280,
+            maxlength: 280,
         },
-        createdAt: {
-            type: Date,
-            default: Date.now(),
-            // Add Getter Method to Auto-Format - TODO -
-        },
-        username: {
-            type: String,
-            required: true,
-        },
-        reactions: [
+        username: [
             {
-                type: Schema.Types.ObjectId,
-                ref: 'reaction',
+                type: String,
+                required: true,
+            },
+        ],
+        createdAt: [
+            {
+                type: Date,
+                default: Date.now(),
+                get: (createdAt: Date) => createdAt.toLocaleDateString("en-US"),
             },
         ],
     },
     {
         toJSON: {
             virtuals: true,
+            getters: true,
         },
-        timestamps: true
     },
 );
+
+const thoughtSchema = new Schema<IThought>(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            minlength : 1,
+            maxlength : 280,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now(),
+            get: (createdAt: Date) => createdAt.toLocaleDateString("en-US"),
+        },
+        username: {
+            type: String,
+            required: true,
+        },
+        reactions: [reactionSchema],
+    },
+    {
+        toJSON: {
+            virtuals: true,
+            getters: true,
+        },
+    },
+);
+
+
+thoughtSchema
+    .virtual('reactionCount')
+    .get(function (this:IThought) {
+        return this.reactions?.length;
+    })
 
 const Thought = model<IThought>('Thought', thoughtSchema);
 
