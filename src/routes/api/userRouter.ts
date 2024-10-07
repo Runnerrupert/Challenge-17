@@ -1,5 +1,4 @@
 import { Router } from 'express';
-const router = Router();
 import {
     getAllUsers,
     getUserById,
@@ -9,6 +8,7 @@ import {
     addFriend,
     deleteFriend
 } from '../../controllers/userController.js';
+const router = Router();
 
 // Router to Get all users and create a user
 router.route('/').get(getAllUsers).post(createUser);
