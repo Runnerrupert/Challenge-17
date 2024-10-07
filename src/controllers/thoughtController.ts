@@ -70,7 +70,7 @@ export const updateThoughtById = async (req: Request, res: Response) => {
     }
 };
 
-// Method to delete a user based on userId
+// Method to delete a thought based on thoughtId
 export const deleteThought = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
@@ -81,6 +81,52 @@ export const deleteThought = async (req: Request, res: Response) => {
         return res.json({ message: 'Thought successfully deleted' });
     } catch (err) {
         console.log(err);
+        return res.status(500).json(err);
+    }
+}
+
+// Method to add a reaction to a specific thought based on that thoughts ID
+export const addReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: 
+                { reactions: req.body }
+            },
+            { runValidators: true, new: true }
+        );
+
+        if (!thought) {
+            return res
+                .status(404)
+                .json({ message: 'No thought was found with that ID' });
+        }
+
+        return res.json(thought);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+// Method to delete a reaction from a specific thought based on that reactions ID
+export const deleteReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: 
+                { friends: req.params.reactionId }
+            },
+            { runValidators: true, new: true }
+        );
+
+        if (!thought) {
+            return res
+                .status(404)
+                .json({ message: 'No thought was found with that ID' });
+        }
+
+        return res.json(thought);
+    } catch (err) {
         return res.status(500).json(err);
     }
 }
