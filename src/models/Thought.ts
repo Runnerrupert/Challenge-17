@@ -4,13 +4,14 @@ interface IReaction extends Document {
     reactionId: Schema.Types.ObjectId,
     reactionBody: string,
     username: string,
-    createdAt: Date,
+    createdAt: Date | string,
 }
 
 interface IThought extends Document {
     thoughtText: string,
     createdAt: Date | string,
     username: string,
+    userId: Schema.Types.ObjectId[] | undefined,
     reactions: Schema.Types.ObjectId[]
 }
 
@@ -63,6 +64,11 @@ const thoughtSchema = new Schema<IThought>(
         username: {
             type: String,
             required: true,
+        },
+        userId: { 
+            type: Schema.Types.ObjectId, 
+            ref: 'user', 
+            required: true
         },
         reactions: [reactionSchema],
     },

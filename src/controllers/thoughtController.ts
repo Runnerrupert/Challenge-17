@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Thought } from '../models/index.js';
+import { Thought, User } from '../models/index.js';
 
 // Method to get all thoughts from the Database
 export const getAllThoughts = async (_req: Request, res: Response) => {
@@ -19,14 +19,14 @@ export const getThoughtById = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findById(thoughtId);
         if (thought) {
-            res.json(thought);
+            return res.json(thought);
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 message: 'Thought not found'
             });
         }
     } catch (error: any) {
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message
         });
     }
@@ -37,10 +37,16 @@ export const getThoughtById = async (req: Request, res: Response) => {
 // TO-DO - Link it to the user
 export const createThought = async (req: Request, res: Response) => {
     try {
+        const user = await User.findById(req.body.userId);
+        if (!user) {
+            return res.status(404).json({ 
+                message: "User not found" 
+            })
+        }
         const thought = await Thought.create(req.body);
-        res.json(thought);
+        return res.json(thought);
     } catch (err) {
-        res.status(500).json(err);
+        return res.status(500).json(err);
     }
 }
 

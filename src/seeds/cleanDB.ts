@@ -1,4 +1,4 @@
-import { User, Thought, Reaction } from '../models/index.js';
+import { User, Thought } from '../models/index.js';
 
 const cleanDB = async (): Promise<void> => {
   try {
