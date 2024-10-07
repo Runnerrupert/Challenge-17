@@ -76,12 +76,12 @@ export const deleteUser = async (req: Request, res: Response) => {
 
         // const thought = await Thought.deleteMany(
         //     { users: req.params.userId },
-        //     { $pull: { students: req.params.userId } },
+        //     { $pull: { thoughts: req.params.thoughtId } },
         // );
 
         // if (!thought) {
         //     return res.status(404).json({
-        //         message: 'Student deleted, but no courses found',
+        //         message: 'User deleted, but no thoughts found',
         //     });
         // }
 
