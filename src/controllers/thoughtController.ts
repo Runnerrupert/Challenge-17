@@ -59,7 +59,8 @@ export const updateThoughtById = async (req: Request, res: Response) => {
     try {
         const thought = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $set: req.body }
+            { $set: req.body },
+            { new: true }
         );
 
         if (!thought) {
