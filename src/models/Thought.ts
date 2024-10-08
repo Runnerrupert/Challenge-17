@@ -45,6 +45,7 @@ const reactionSchema = new Schema<IReaction>(
             virtuals: true,
             getters: true,
         },
+        id: false,
     },
 );
 

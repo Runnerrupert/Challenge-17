@@ -132,7 +132,7 @@ export const deleteFriend = async (req: Request, res: Response) => {
                 .status(404)
                 .json({ message: 'No user was found with that ID' });
         }
-
+        console.log(user.friends);
         return res.json(user);
     } catch (err) {
         return res.status(500).json(err);
