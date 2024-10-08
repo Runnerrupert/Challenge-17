@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-// import { ObjectId } from 'mongodb'; // 
-import { User } from '../models/index.js'; // Import { Thought } when ready
+import { User, Thought } from '../models/index.js';
 
 // Method to get all users from the Database
 export const getAllUsers = async (_req: Request, res: Response) => {
@@ -73,20 +72,17 @@ export const deleteUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'No such user exists' });
         }
 
-        // Add for deleting all thoughts & reactions on that specified user
+        const thought = await Thought.deleteMany(
+            { userId: req.params.userId },
+        );
 
-        // const thought = await Thought.deleteMany(
-        //     { users: req.params.userId },
-        //     { $pull: { thoughts: req.params.thoughtId } },
-        // );
+        if (thought.deletedCount === 0) {
+            return res.status(200).json({
+                message: 'User successfully deleted, but no thoughts were found',
+            });
+        }
 
-        // if (!thought) {
-        //     return res.status(404).json({
-        //         message: 'User deleted, but no thoughts found',
-        //     });
-        // }
-
-        return res.json({ message: 'User successfully deleted' });
+        return res.json({ message: 'User and all associated thoughts have been successfully deleted' });
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
